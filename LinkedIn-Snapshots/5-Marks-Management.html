@@ -1,0 +1,422 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Marks Management - School Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      background: #f5f5f5;
+      color: #555;
+    }
+    
+    #main {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+    }
+    
+    #header {
+      background: #1d1d1d;
+      border-bottom: 3px solid #E7746F;
+      padding: 20px;
+    }
+    
+    #logo_text h1 {
+      color: white;
+      font-size: 2em;
+    }
+    
+    .logo_colour {
+      color: #E7746F;
+    }
+    
+    #menubar {
+      background: #009FBC;
+      padding: 15px 20px;
+    }
+    
+    #menu {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    #menu a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9em;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    
+    #menu a:hover, #menu .selected a {
+      background: #E7746F;
+    }
+    
+    #site_content {
+      padding: 30px;
+    }
+    
+    h1 {
+      color: #E7746F;
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .control-group label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .control-group select,
+    .control-group input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    
+    .btn {
+      background: #009FBC;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      align-self: flex-end;
+      transition: background 0.3s;
+    }
+    
+    .btn:hover {
+      background: #E7746F;
+    }
+    
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 0.9em;
+    }
+    
+    .btn-success {
+      background: #5cb85c;
+    }
+    
+    .btn-success:hover {
+      background: #449d44;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    th {
+      background: #009FBC;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      border-bottom: 3px solid #E7746F;
+    }
+    
+    td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    
+    td.student-name {
+      text-align: left;
+    }
+    
+    tr:hover {
+      background: #f9f9f9;
+    }
+    
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+    
+    input[type="number"] {
+      width: 70px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #009FBC;
+      box-shadow: 0 0 5px rgba(0, 159, 188, 0.3);
+    }
+    
+    .grade {
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #e8f4f8;
+    }
+    
+    .grade.a {
+      background: #dff0d8;
+      color: #3c763d;
+    }
+    
+    .grade.b {
+      background: #d9edf7;
+      color: #31708f;
+    }
+    
+    .grade.c {
+      background: #fcf8e3;
+      color: #8a6d3b;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .stat {
+      background: #f0f8ff;
+      border-left: 4px solid #009FBC;
+      padding: 15px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .stat h3 {
+      color: #E7746F;
+      font-size: 1.5em;
+      margin-bottom: 5px;
+    }
+    
+    .stat p {
+      color: #666;
+      font-size: 0.95em;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    #footer {
+      background: #1d1d1d;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 2px solid #E7746F;
+    }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo_text">
+        <h1>School <span class="logo_colour">Manager</span></h1>
+      </div>
+    </div>
+    
+    <div id="menubar">
+      <ul id="menu">
+        <li><a href="#">FEE RECEIPT</a></li>
+        <li><a href="#">ADD STUDENT</a></li>
+        <li><a href="#">VIEW STUDENTS</a></li>
+        <li><a href="#">STAFF</a></li>
+        <li class="selected"><a href="#">MARKS</a></li>
+        <li style="margin-left: auto;"><a href="#">LOGOUT</a></li>
+      </ul>
+    </div>
+    
+    <div id="site_content">
+      <h1>📊 Marks Management & Grading</h1>
+      
+      <div class="stats">
+        <div class="stat">
+          <h3>1,245</h3>
+          <p>Total Students</p>
+        </div>
+        <div class="stat">
+          <h3>5</h3>
+          <p>Assessment Types</p>
+        </div>
+        <div class="stat">
+          <h3>87.5%</h3>
+          <p>Class Average</p>
+        </div>
+        <div class="stat">
+          <h3>28</h3>
+          <p>Classes</p>
+        </div>
+      </div>
+      
+      <div class="controls">
+        <div class="control-group">
+          <label>Select Class</label>
+          <select>
+            <option>-- Choose Class --</option>
+            <option selected>Class 10-A</option>
+            <option>Class 10-B</option>
+            <option>Class 9-A</option>
+            <option>Class 9-B</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label>Assessment Type</label>
+          <select>
+            <option>-- Select Assessment --</option>
+            <option selected>Mid-Term Exam</option>
+            <option>Final Exam</option>
+            <option>Unit Test 1</option>
+            <option>Unit Test 2</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label>Subject</label>
+          <select>
+            <option>-- Select Subject --</option>
+            <option selected>Mathematics</option>
+            <option>English</option>
+            <option>Science</option>
+            <option>Social Studies</option>
+          </select>
+        </div>
+        
+        <button class="btn">🔍 Load Marks</button>
+      </div>
+      
+      <h2 style="color: #009FBC; margin: 30px 0 20px 0; font-size: 1.3em;">📋 Mid-Term Exam - Mathematics (Class 10-A)</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Reg No</th>
+            <th>Student Name</th>
+            <th>Marks (Out of 100)</th>
+            <th>Grade</th>
+            <th>Percentage</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>S001</td>
+            <td class="student-name">Arjun Kumar Singh</td>
+            <td><input type="number" value="92" min="0" max="100" /></td>
+            <td><span class="grade a">A</span></td>
+            <td>92%</td>
+            <td style="color: #27ae60; font-weight: bold;">✓ Pass</td>
+            <td class="actions">
+              <button class="btn btn-small">Save</button>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>S002</td>
+            <td class="student-name">Priya Sharma</td>
+            <td><input type="number" value="85" min="0" max="100" /></td>
+            <td><span class="grade b">B</span></td>
+            <td>85%</td>
+            <td style="color: #27ae60; font-weight: bold;">✓ Pass</td>
+            <td class="actions">
+              <button class="btn btn-small">Save</button>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>S003</td>
+            <td class="student-name">Rahul Patel</td>
+            <td><input type="number" value="78" min="0" max="100" /></td>
+            <td><span class="grade b">B</span></td>
+            <td>78%</td>
+            <td style="color: #27ae60; font-weight: bold;">✓ Pass</td>
+            <td class="actions">
+              <button class="btn btn-small">Save</button>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>S004</td>
+            <td class="student-name">Sneha Gupta</td>
+            <td><input type="number" value="88" min="0" max="100" /></td>
+            <td><span class="grade a">A</span></td>
+            <td>88%</td>
+            <td style="color: #27ae60; font-weight: bold;">✓ Pass</td>
+            <td class="actions">
+              <button class="btn btn-small">Save</button>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>S005</td>
+            <td class="student-name">Aditya Verma</td>
+            <td><input type="number" value="95" min="0" max="100" /></td>
+            <td><span class="grade a">A</span></td>
+            <td>95%</td>
+            <td style="color: #27ae60; font-weight: bold;">✓ Pass</td>
+            <td class="actions">
+              <button class="btn btn-small">Save</button>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>S006</td>
+            <td class="student-name">Divya Singh</td>
+            <td><input type="number" value="72" min="0" max="100" /></td>
+            <td><span class="grade c">C</span></td>
+            <td>72%</td>
+            <td style="color: #27ae60; font-weight: bold;">✓ Pass</td>
+            <td class="actions">
+              <button class="btn btn-small">Save</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div style="margin-top: 20px; text-align: center;">
+        <button class="btn btn-success">✓ Submit All Marks</button>
+      </div>
+    </div>
+    
+    <div id="footer">
+      <p>Copyright © School Manager 2024 | Advanced School Management System</p>
+    </div>
+  </div>
+</body>
+</html>

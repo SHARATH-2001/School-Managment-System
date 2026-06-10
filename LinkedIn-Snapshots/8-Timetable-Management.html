@@ -1,0 +1,470 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Timetable Management - School Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      background: #f5f5f5;
+      color: #555;
+    }
+    
+    #main {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+    }
+    
+    #header {
+      background: #1d1d1d;
+      border-bottom: 3px solid #E7746F;
+      padding: 20px;
+    }
+    
+    #logo_text h1 {
+      color: white;
+      font-size: 2em;
+    }
+    
+    .logo_colour {
+      color: #E7746F;
+    }
+    
+    #menubar {
+      background: #009FBC;
+      padding: 15px 20px;
+    }
+    
+    #menu {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    #menu a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9em;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    
+    #menu a:hover, #menu .selected a {
+      background: #E7746F;
+    }
+    
+    #site_content {
+      padding: 30px;
+    }
+    
+    h1 {
+      color: #E7746F;
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .control-group label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .control-group select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    
+    .btn {
+      background: #009FBC;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      align-self: flex-end;
+      transition: background 0.3s;
+    }
+    
+    .btn:hover {
+      background: #E7746F;
+    }
+    
+    .timetable-container {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .timetable-header {
+      background: #009FBC;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 3px solid #E7746F;
+    }
+    
+    .timetable-header h2 {
+      font-size: 1.5em;
+      margin-bottom: 5px;
+    }
+    
+    .timetable-header p {
+      font-size: 0.95em;
+      opacity: 0.9;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th {
+      background: #e8f4f8;
+      border: 1px solid #ddd;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      color: #009FBC;
+    }
+    
+    td {
+      border: 1px solid #ddd;
+      padding: 15px;
+      text-align: center;
+      min-height: 60px;
+      vertical-align: middle;
+    }
+    
+    tr:nth-child(even) td {
+      background: #fafafa;
+    }
+    
+    tr:hover td {
+      background: #f0f8ff;
+    }
+    
+    .time-slot {
+      font-weight: bold;
+      background: #e8f4f8;
+      color: #009FBC;
+    }
+    
+    .subject {
+      background: linear-gradient(135deg, #dff0d8 0%, #c8e6c9 100%);
+      color: #2d5016;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 8px;
+      margin: 4px 0;
+    }
+    
+    .break {
+      background: #ffebee;
+      color: #c62828;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 8px;
+    }
+    
+    .assembly {
+      background: #e3f2fd;
+      color: #1565c0;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 8px;
+    }
+    
+    .legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .legend-color {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 0.8em;
+    }
+    
+    .subject-legend {
+      background: linear-gradient(135deg, #dff0d8 0%, #c8e6c9 100%);
+      color: #2d5016 !important;
+    }
+    
+    .break-legend {
+      background: #ffebee;
+      color: #c62828 !important;
+    }
+    
+    .assembly-legend {
+      background: #e3f2fd;
+      color: #1565c0 !important;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .stat {
+      background: #f0f8ff;
+      border-left: 4px solid #009FBC;
+      padding: 15px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .stat h3 {
+      color: #E7746F;
+      font-size: 1.5em;
+      margin-bottom: 5px;
+    }
+    
+    .stat p {
+      color: #666;
+      font-size: 0.95em;
+    }
+    
+    #footer {
+      background: #1d1d1d;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 2px solid #E7746F;
+    }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo_text">
+        <h1>School <span class="logo_colour">Manager</span></h1>
+      </div>
+    </div>
+    
+    <div id="menubar">
+      <ul id="menu">
+        <li><a href="#">FEE RECEIPT</a></li>
+        <li><a href="#">ADD STUDENT</a></li>
+        <li><a href="#">VIEW STUDENTS</a></li>
+        <li><a href="#">STAFF</a></li>
+        <li class="selected"><a href="#">TIMETABLE</a></li>
+        <li style="margin-left: auto;"><a href="#">LOGOUT</a></li>
+      </ul>
+    </div>
+    
+    <div id="site_content">
+      <h1>📅 Timetable Management</h1>
+      
+      <div class="stats">
+        <div class="stat">
+          <h3>28</h3>
+          <p>Active Classes</p>
+        </div>
+        <div class="stat">
+          <h3>52</h3>
+          <p>Teachers</p>
+        </div>
+        <div class="stat">
+          <h3>15</h3>
+          <p>Subjects</p>
+        </div>
+        <div class="stat">
+          <h3>5</h3>
+          <p>Working Days</p>
+        </div>
+      </div>
+      
+      <div class="controls">
+        <div class="control-group">
+          <label>Select Class</label>
+          <select>
+            <option>-- Choose Class --</option>
+            <option selected>Class 10-A</option>
+            <option>Class 10-B</option>
+            <option>Class 9-A</option>
+            <option>Class 9-B</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label>Select Semester</label>
+          <select>
+            <option>-- Choose Semester --</option>
+            <option selected>Semester 1 (Jan-Jun)</option>
+            <option>Semester 2 (Jul-Dec)</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label>View Type</label>
+          <select>
+            <option selected>Weekly</option>
+            <option>Monthly</option>
+            <option>Printable</option>
+          </select>
+        </div>
+        
+        <button class="btn">🔄 Load Timetable</button>
+      </div>
+      
+      <div class="timetable-container">
+        <div class="timetable-header">
+          <h2>📚 Class 10-A Weekly Schedule</h2>
+          <p>Semester 1 | Academic Year 2024-2025</p>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time-slot">8:00-8:30</td>
+              <td colspan="5" class="assembly">🏫 Assembly & Morning Prayer</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">8:30-9:20</td>
+              <td class="subject">Math (Mr. Rajesh)</td>
+              <td class="subject">English (Mr. Vikram)</td>
+              <td class="subject">Science (Ms. Priya)</td>
+              <td class="subject">Math (Mr. Rajesh)</td>
+              <td class="subject">Computer Science (Ms. Sneha)</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">9:20-10:10</td>
+              <td class="subject">English (Mr. Vikram)</td>
+              <td class="subject">Science (Ms. Priya)</td>
+              <td class="subject">Math (Mr. Rajesh)</td>
+              <td class="subject">Computer Science (Ms. Sneha)</td>
+              <td class="subject">Social Studies</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">10:10-10:30</td>
+              <td colspan="5" class="break">☕ Tea Break</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">10:30-11:20</td>
+              <td class="subject">Science (Ms. Priya)</td>
+              <td class="subject">Math (Mr. Rajesh)</td>
+              <td class="subject">Computer Science (Ms. Sneha)</td>
+              <td class="subject">Social Studies</td>
+              <td class="subject">Math (Mr. Rajesh)</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">11:20-12:10</td>
+              <td class="subject">Computer Science (Ms. Sneha)</td>
+              <td class="subject">Social Studies</td>
+              <td class="subject">English (Mr. Vikram)</td>
+              <td class="subject">Science (Ms. Priya)</td>
+              <td class="subject">English (Mr. Vikram)</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">12:10-1:00</td>
+              <td class="subject">Social Studies</td>
+              <td class="subject">Computer Science (Ms. Sneha)</td>
+              <td class="subject">Social Studies</td>
+              <td class="subject">English (Mr. Vikram)</td>
+              <td class="subject">Physical Education</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">1:00-1:30</td>
+              <td colspan="5" class="break">🍽️ Lunch Break</td>
+            </tr>
+            
+            <tr>
+              <td class="time-slot">1:30-2:20</td>
+              <td class="subject">Art & Culture</td>
+              <td class="subject">Physical Education</td>
+              <td class="subject">Art & Culture</td>
+              <td class="subject">Computer Science (Ms. Sneha)</td>
+              <td class="subject">Science (Ms. Priya)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color subject-legend">📚</div>
+          <span>Regular Classes</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color break-legend">🕐</div>
+          <span>Break/Recess</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color assembly-legend">🏫</div>
+          <span>Assembly/Events</span>
+        </div>
+      </div>
+    </div>
+    
+    <div id="footer">
+      <p>Copyright © School Manager 2024 | Advanced School Management System</p>
+    </div>
+  </div>
+</body>
+</html>
